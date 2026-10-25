@@ -241,10 +241,10 @@ if SERVER then
 		end
 
 		local data = {}
-		data["torque"] = ent:GetMaxTorque() * (WheelRad / 10) * ent:GetEfficiency() * (1 + (ent:GetTurboCharged() and 0.3 or 0) + (ent:GetSuperCharged() and 0.48 or 0))
-		data["horsepower"] = (data["torque"] * ent:GetLimitRPM() / 9548.8) * 1.34
-		data["maxspeed"] = ((ent:GetLimitRPM() * ent.Gears[ table.Count( ent.Gears ) ] * ent:GetDifferentialGear()) * 3.14 * WheelRad * 2) / 52
-		data["weight"] = Mass
+		data.torque = ent:GetMaxTorque() * (WheelRad / 10) * ent:GetEfficiency() * (1 + (ent:GetTurboCharged() and 0.3 or 0) + (ent:GetSuperCharged() and 0.48 or 0))
+		data.horsepower = (data.torque * ent:GetLimitRPM() / 9548.8) * 1.34
+		data.maxspeed = ((ent:GetLimitRPM() * ent.Gears[ table.Count( ent.Gears ) ] * ent:GetDifferentialGear()) * 3.14 * WheelRad * 2) / 52
+		data.weight = Mass
 
 		return data
 	end
@@ -265,7 +265,8 @@ if SERVER then
 	end
 
 	function simfphys.SpawnVehicle( Player, Pos, Ang, Model, Class, VName, VTable, bNoOwner )
-		if IsValid( Player ) and not Player:CheckLimit( "simfphys" )  then return end
+		if not IsValid( Player ) then return end
+		if not Player:CheckLimit( "simfphys" )  then return end
 
 		if not bNoOwner then
 			if not gamemode.Call( "PlayerSpawnVehicle", Player, Model, VName, VTable ) then return end
@@ -400,11 +401,7 @@ if SERVER then
 			duplicator.StoreEntityModifier( Ent, "VehicleMemDupe", VTable.Members )
 		end
 
-		if IsValid( Player ) then
-			gamemode.Call( "PlayerSpawnedVehicle", Player, Ent )
-
-			return Ent
-		end
+		hook.Run( "PlayerSpawnedVehicle", Player, Ent )
 
 		return Ent
 	end
@@ -443,10 +440,10 @@ if CLIENT then
 		if not simfphys.IsCar( ent ) then return end
 
 		ent.VehicleInfo = {}
-		ent.VehicleInfo["torque"] =  net.ReadFloat()
-		ent.VehicleInfo["horsepower"] = net.ReadFloat()
-		ent.VehicleInfo["maxspeed"] = net.ReadFloat()
-		ent.VehicleInfo["weight"] = net.ReadFloat()
+		ent.VehicleInfo.torque =  net.ReadFloat()
+		ent.VehicleInfo.horsepower = net.ReadFloat()
+		ent.VehicleInfo.maxspeed = net.ReadFloat()
+		ent.VehicleInfo.weight = net.ReadFloat()
 	end )
 end
 
@@ -454,19 +451,19 @@ function simfphys.UpdateFrictionData()
 	simfphys.TractionData = {}
 
 	timer.Simple( 0.1,function()
-		simfphys.TractionData["ice"] = simfphys.ice:GetFloat()
-		simfphys.TractionData["gmod_ice"] = simfphys.gmod_ice:GetFloat()
-		simfphys.TractionData["snow"] = simfphys.snow:GetFloat()
-		simfphys.TractionData["slipperyslime"] = simfphys.slipperyslime:GetFloat()
-		simfphys.TractionData["grass"] = simfphys.grass:GetFloat()
-		simfphys.TractionData["sand"] = simfphys.sand:GetFloat()
-		simfphys.TractionData["dirt"] = simfphys.dirt:GetFloat()
-		simfphys.TractionData["concrete"] = simfphys.concrete:GetFloat()
-		simfphys.TractionData["metal"] = simfphys.metal:GetFloat()
-		simfphys.TractionData["glass"] = simfphys.glass:GetFloat()
-		simfphys.TractionData["gravel"] = simfphys.gravel:GetFloat()
-		simfphys.TractionData["rock"] = simfphys.rock:GetFloat()
-		simfphys.TractionData["wood"] = simfphys.wood:GetFloat()
+		simfphys.TractionData.ice = simfphys.ice:GetFloat()
+		simfphys.TractionData.gmod_ice = simfphys.gmod_ice:GetFloat()
+		simfphys.TractionData.snow = simfphys.snow:GetFloat()
+		simfphys.TractionData.slipperyslime = simfphys.slipperyslime:GetFloat()
+		simfphys.TractionData.grass = simfphys.grass:GetFloat()
+		simfphys.TractionData.sand = simfphys.sand:GetFloat()
+		simfphys.TractionData.dirt = simfphys.dirt:GetFloat()
+		simfphys.TractionData.concrete = simfphys.concrete:GetFloat()
+		simfphys.TractionData.metal = simfphys.metal:GetFloat()
+		simfphys.TractionData.glass = simfphys.glass:GetFloat()
+		simfphys.TractionData.gravel = simfphys.gravel:GetFloat()
+		simfphys.TractionData.rock = simfphys.rock:GetFloat()
+		simfphys.TractionData.wood = simfphys.wood:GetFloat()
 	end)
 end
 simfphys.UpdateFrictionData()
