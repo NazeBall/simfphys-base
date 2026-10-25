@@ -1,5 +1,13 @@
+local plyMeta = FindMetaTable( "Player" )
+local ply_GetSimfphys = plyMeta.GetSimfphys
+local ply_IsDrivingSimfphys = plyMeta.IsDrivingSimfphys
+
+local IsValid = IsValid
+local CLIENT = CLIENT
+local ACT_HL2MP_SIT = ACT_HL2MP_SIT
+
 hook.Add("CalcMainActivity", "simfphysSeatActivityOverride", function(ply)
-	local veh, inVehicle = ply:GetSimfphys()
+	local veh, inVehicle = ply_GetSimfphys( ply )
 
 	if not inVehicle then return end
 	if not IsValid( veh ) then return end
@@ -16,7 +24,7 @@ hook.Add("CalcMainActivity", "simfphysSeatActivityOverride", function(ply)
 	ply.CalcIdeal = ACT_HL2MP_SIT
 	ply.CalcSeqOverride = isfunction( veh.GetSeatAnimation ) and veh:GetSeatAnimation( ply ) or -1
 
-	if not ply:IsDrivingSimfphys() and ply:GetAllowWeaponsInVehicle() and IsValid( ply:GetActiveWeapon() ) then
+	if not ply_IsDrivingSimfphys( ply ) and ply:GetAllowWeaponsInVehicle() and IsValid( ply:GetActiveWeapon() ) then
 
 		local holdtype = ply:GetActiveWeapon():GetHoldType()
 
@@ -35,18 +43,21 @@ hook.Add("CalcMainActivity", "simfphysSeatActivityOverride", function(ply)
 end)
 
 if CLIENT then
-	hook.Add( "UpdateAnimation", "simfphysPoseparameters", function( ply , vel )
-		if not ply:IsDrivingSimfphys() then return end
+	local ply_SetPoseParameter = plyMeta.SetPoseParameter
+	local ply_InvalidateBoneCache = plyMeta.InvalidateBoneCache
 
-		local Car, inVehicle = ply:GetSimfphys()
+	hook.Add( "UpdateAnimation", "simfphysPoseparameters", function( ply , vel )
+		if not ply_IsDrivingSimfphys( ply ) then return end
+
+		local Car, inVehicle = ply_GetSimfphys( ply )
 
 		if not inVehicle then return end
 		if not IsValid( Car ) then return end
 
 		local Steer = Car:GetVehicleSteer()
 
-		ply:SetPoseParameter( "vehicle_steer", Steer )
-		ply:InvalidateBoneCache()
+		ply_SetPoseParameter( ply, "vehicle_steer", Steer )
+		ply_InvalidateBoneCache( ply )
 
 		GAMEMODE:GrabEarAnimation( ply )
 		GAMEMODE:MouthMoveAnimation( ply )
