@@ -6,7 +6,7 @@ local IsValid = IsValid
 local CLIENT = CLIENT
 local ACT_HL2MP_SIT = ACT_HL2MP_SIT
 
-hook.Add("CalcMainActivity", "simfphysSeatActivityOverride", function(ply)
+hook.Add( "CalcMainActivity", "simfphysSeatActivityOverride", function(ply)
 	local veh, inVehicle = ply_GetSimfphys( ply )
 
 	if not inVehicle then return end
@@ -42,26 +42,27 @@ hook.Add("CalcMainActivity", "simfphysSeatActivityOverride", function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end)
 
-if CLIENT then
-	local ply_SetPoseParameter = plyMeta.SetPoseParameter
-	local ply_InvalidateBoneCache = plyMeta.InvalidateBoneCache
 
-	hook.Add( "UpdateAnimation", "simfphysPoseparameters", function( ply , vel )
-		if not ply_IsDrivingSimfphys( ply ) then return end
+if not CLIENT then return end
 
-		local Car, inVehicle = ply_GetSimfphys( ply )
+local ply_SetPoseParameter = plyMeta.SetPoseParameter
+local ply_InvalidateBoneCache = plyMeta.InvalidateBoneCache
 
-		if not inVehicle then return end
-		if not IsValid( Car ) then return end
+hook.Add( "UpdateAnimation", "simfphysPoseparameters", function( ply , vel )
+	if not ply_IsDrivingSimfphys( ply ) then return end
 
-		local Steer = Car:GetVehicleSteer()
+	local Car, inVehicle = ply_GetSimfphys( ply )
 
-		ply_SetPoseParameter( ply, "vehicle_steer", Steer )
-		ply_InvalidateBoneCache( ply )
+	if not inVehicle then return end
+	if not IsValid( Car ) then return end
 
-		GAMEMODE:GrabEarAnimation( ply )
-		GAMEMODE:MouthMoveAnimation( ply )
+	local Steer = Car:GetVehicleSteer()
 
-		return true
-	end )
-end
+	ply_SetPoseParameter( ply, "vehicle_steer", Steer )
+	ply_InvalidateBoneCache( ply )
+
+	GAMEMODE:GrabEarAnimation( ply )
+	GAMEMODE:MouthMoveAnimation( ply )
+
+	return true
+end )
