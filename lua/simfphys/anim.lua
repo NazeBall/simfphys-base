@@ -45,8 +45,8 @@ end)
 
 if not CLIENT then return end
 
-local ply_SetPoseParameter = plyMeta.SetPoseParameter
-local ply_InvalidateBoneCache = plyMeta.InvalidateBoneCache
+local ply_SetPoseParameter = FindMetaTable( "Entity" ).SetPoseParameter
+local ply_InvalidateBoneCache = FindMetaTable( "Entity" ).InvalidateBoneCache
 
 hook.Add( "UpdateAnimation", "simfphysPoseparameters", function( ply , vel )
 	if not ply_IsDrivingSimfphys( ply ) then return end
