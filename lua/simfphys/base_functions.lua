@@ -7,6 +7,9 @@ CreateConVar( "sv_simfphys_fuel", "1", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"enabl
 CreateConVar( "sv_simfphys_fuelscale", "0.1", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"fuel tank size multiplier. 1 = Realistic fuel tank size (about 2-3 hours of fullthrottle driving, Lol, have fun)" )
 CreateConVar( "sv_simfphys_teampassenger", "0", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"allow players of different teams to enter the same vehicle?, 0 = allow everyone, 1 = team only" )
 
+
+local simfphys = simfphys
+
 simfphys.DamageEnabled = false
 simfphys.DamageMul = 1
 simfphys.pDamageEnabled = false
@@ -81,14 +84,17 @@ function simfphys.IsCar( ent )
 end
 
 local meta = FindMetaTable( "Player" )
-function meta:IsDrivingSimfphys()
-	if not self:InVehicle() then return false end
+local ply_InVehicle = meta.InVehicle
+local ply_GetVehicle = meta.GetVehicle
 
-	local Pod = self:GetVehicle()
+function meta:IsDrivingSimfphys()
+	if not ply_InVehicle( self ) then return false end
+
+	local Pod = ply_GetVehicle( self )
 	if not IsValid( Pod ) then return false end
 
-	local Car = self:GetSimfphys()
-	if not IsValid( Car ) then return false end
+	local Car = ply_GetSimfphys( self )
+	if not Car:IsValid() then return false end
 
 	local GetDriverSeat = Car.GetDriverSeat
 	if not GetDriverSeat or not isfunction( GetDriverSeat ) then return false end
@@ -97,10 +103,14 @@ function meta:IsDrivingSimfphys()
 end
 
 function meta:GetSimfphys()
-	if not self:InVehicle() then return NULL, false end
+	if not ply_InVehicle( self ) then
+		return NULL, false
+	end
 
-	local Pod = self:GetVehicle()
-	if not IsValid( Pod ) then return NULL, false end
+	local Pod = ply_GetVehicle( self )
+	if not Pod:IsValid() then
+		return NULL, false
+	end
 
 	local tab = Pod:GetTable()
 
