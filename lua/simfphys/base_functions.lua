@@ -145,9 +145,7 @@ if SERVER then
 	util.AddNetworkString( "simfphys_backfire" )
 	util.AddNetworkString( "simfphys_plyrequestinfo" )
 
-	net.Receive( "simfphys_plyrequestinfo", function( length, ply )
-		if not IsValid( ply ) then return end
-
+	net.Receive( "simfphys_plyrequestinfo", function( _, ply )
 		ply.simeditor_nextrequest = isnumber( ply.simeditor_nextrequest ) and ply.simeditor_nextrequest or 0
 
 		if ply.simeditor_nextrequest > CurTime() then return end
@@ -166,10 +164,10 @@ if SERVER then
 
 		net.Start( "simfphys_plyrequestinfo" )
 			net.WriteEntity( ent )
-			net.WriteFloat( data["torque"] )
-			net.WriteFloat( data["horsepower"] )
-			net.WriteFloat( data["maxspeed"] )
-			net.WriteFloat( data["weight"] )
+			net.WriteFloat( data.torque )
+			net.WriteFloat( data.horsepower )
+			net.WriteFloat( data.maxspeed )
+			net.WriteFloat( data.weight )
 		net.Send( ply )
 	end )
 
