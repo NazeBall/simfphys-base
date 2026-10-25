@@ -93,7 +93,7 @@ function meta:IsDrivingSimfphys()
 	local Pod = ply_GetVehicle( self )
 	if not IsValid( Pod ) then return false end
 
-	local Car = ply_GetSimfphys( self )
+	local Car = self:GetSimfphys()
 	if not Car:IsValid() then return false end
 
 	local GetDriverSeat = Car.GetDriverSeat
