@@ -53,16 +53,8 @@ if CLIENT then
 		TOOLMemory = net.ReadTable()
 	end)
 
-<<<<<<< Updated upstream
 	local function GetSaves( panel )
 		local saved_vehicles = file.Find("saved_vehicles/*.txt", "DATA")
-=======
-
-	local vehicleSaves = {}
-
-	local function getVehicleSaves()
-		local vehicles = file.Find( "saved_vehicles/*.txt", "DATA" )
->>>>>>> Stashed changes
 		local index = 0
 		local highlight = false
 		local offset = 22
@@ -70,35 +62,8 @@ if CLIENT then
 		for k,v in pairs(saved_vehicles) do
 			local printname = v
 
-<<<<<<< Updated upstream
 			if not selecteditem then
 				selecteditem = printname
-=======
-		for _, name in pairs( vehicles ) do
-			vehicleSaves[#vehicleSaves + 1] = name
-		end
-	end
-
-
-	local ITEM_OFFSET = 22
-
-	local CLR_ALPHA = 200
-	local CLR_SELECTED = Color( 0, 73, 120, CLR_ALPHA )
-	local CLR_NORMAL1 = Color( 108, 111, 114, CLR_ALPHA )
-	local CLR_NORMAL2 = Color( 77, 80, 82, CLR_ALPHA )
-	local CLR_HOVERED = Color( 41, 128, 185, CLR_ALPHA )
-
-	local function fillList( panel, tbl )
-		panel:Clear()
-
-		local highlight = false
-
-		for i = 1, #tbl do
-			local name = tbl[i]
-
-			if not selectedItem then
-				selectedItem = name
->>>>>>> Stashed changes
 			end
 
 			local Button = vgui.Create( "DButton", panel )
@@ -110,7 +75,6 @@ if CLIENT then
 			Button.printname = printname
 			Button.Paint = function( self, w, h )
 
-<<<<<<< Updated upstream
 				local c_selected = Color( 128, 185, 128, 255 )
 				local c_normal = self.highlight and Color( 108, 111, 114, 200 ) or Color( 77, 80, 82, 200 )
 				local c_hovered = Color( 41, 128, 185, 255 )
@@ -124,32 +88,6 @@ if CLIENT then
 
 			index = index + 1
 			highlight = not highlight
-=======
-			local btn = vgui.Create( "DButton", panel )
-			btn:SetText( name )
-			btn:SetTextColor( color_white )
-			--btn:SetPos( 0, ( i - 1 ) * ITEM_OFFSET )
-			btn:Dock( TOP )
-			btn:SetTall( ITEM_OFFSET )
-			
-			highlight = not highlight
-
-			btn.highlight = highlight
-			btn.printname = name
-
-
-			local clrNormal, clr
-			btn.Paint = function( self, w, h )
-				clrNormal = self.highlight and CLR_NORMAL1 or CLR_NORMAL2
-				clr = selectedItem == name and CLR_SELECTED or ( self:IsHovered() and CLR_HOVERED or clrNormal )
-
-				draw.RoundedBox( 5, 1, 1, w - 2, h - 1, clr )
-			end
-
-			btn.DoClick = function()
-				selectedItem = name
-			end
->>>>>>> Stashed changes
 		end
 	end
 
@@ -158,7 +96,6 @@ if CLIENT then
 			file.CreateDir( "saved_vehicles" )
 		end
 
-<<<<<<< Updated upstream
 		local Frame = vgui.Create( "DFrame", panel )
 		Frame:SetPos( 10, 30 )
 		Frame:SetSize( 280, 320 )
@@ -176,40 +113,6 @@ if CLIENT then
 		ScrollPanel:SetPos( 0, 0 )
 
 		GetSaves( ScrollPanel )
-=======
-		local container = vgui.Create( "DPanel", panel )
-		container:Dock( TOP )
-		container:DockMargin( 10, 10, 10, 10 )
-		container:SetTall( 445 )
-
-		local refreshBtn = vgui.Create( "DButton", container )
-		refreshBtn:SetText( "Refresh" )
-		refreshBtn:Dock( TOP )
-		refreshBtn:SetTall( 20 )
-
-
-		local listContainer = vgui.Create( "DPanel", container )
-		--listContainer:SetPos( 10, 30 )
-		listContainer:Dock( TOP )
-		listContainer:SetTall( 350 )
-
-		do
-			local COLOR1 = Color( 115, 115, 115, 255 )
-			local COLOR2 = Color( 234, 234, 234, 255 )
-
-			listContainer.Paint = function( self, w, h )
-				draw.RoundedBox( 5, 0, 0, w, h, COLOR1 )
-				draw.RoundedBox( 5, 1, 1, w - 2, h - 2, COLOR2 )
-			end
-		end
-
-
-		-- Search bar
-		local searchBar = vgui.Create( "DTextEntry", listContainer )
-		searchBar:Dock( TOP )
-		searchBar:SetTall( 20 )
-		searchBar:SetPlaceholderText( "Search saved vehicles..." )
->>>>>>> Stashed changes
 
 		local Button = vgui.Create( "DButton", panel )
 		Button:SetText( "Save" )
@@ -236,7 +139,6 @@ if CLIENT then
 					if Name ~= "" then
 						local DataString = ""
 
-<<<<<<< Updated upstream
 						for k,v in pairs(TOOLMemory) do
 							if k == "SubMaterials" then
 								local mats = ""
@@ -253,64 +155,6 @@ if CLIENT then
 							else
 								DataString = DataString..k.."="..tostring( v ).."#"
 							end
-=======
-			fillList( ScrollPanel, matches )
-		end
-
-		-- Vehicle list
-		local ScrollPanel = vgui.Create( "DScrollPanel", listContainer )
-		ScrollPanel:SetTall( 300 )
-		ScrollPanel:Dock( FILL )
-		
-		refreshList( ScrollPanel )
-
-
-		local saveBtn = vgui.Create( "DButton", container )
-		saveBtn:SetText( "Save" )
-		saveBtn:SetTall( 20 )
-		saveBtn:Dock( TOP )
-		saveBtn:DockMargin( 0, 15, 0, 0 )
-
-		saveBtn.DoClick = function()
-			if not TOOLMemory.SpawnName then return end
-
-			local saveFrame = vgui.Create( "DFrame" )
-			saveFrame:SetSize( 300, 50 )
-			saveFrame:SetPos( gui.MouseX() - saveFrame:GetWide() * 0.5,  gui.MouseY() - 30 )
-			saveFrame:SetTitle( "Save As..." )
-			saveFrame:SetVisible( true )
-			saveFrame:ShowCloseButton( true )
-			saveFrame:MakePopup()
-			saveFrame:SetDraggable( true )
-
-			local textEntry = vgui.Create( "DTextEntry", saveFrame )
-			textEntry:Dock( FILL )
-			textEntry:RequestFocus()
-			saveFrame:DockPadding( 3, 26, 3, 3 )
-
-			textEntry.OnEnter = function( _, name )
-				saveFrame:Close()
-
-				if name == "" then return end
-				local dataString = ""
-
-				for k, v in pairs( TOOLMemory ) do
-					if k ~= "SubMaterials" then
-						dataString = dataString .. k .. "=" .. tostring( v ) .. "#"
-
-						continue
-					end
-
-					local mats = ""
-					local first = true
-					
-					for k, v in pairs( v ) do
-						if first then
-							first = false
-							mats = mats .. v
-						else
-							mats = mats .. "," .. v
->>>>>>> Stashed changes
 						end
 
 						local words = string.Explode( "", DataString )
@@ -359,20 +203,10 @@ if CLIENT then
 
 				table.Empty( TOOLMemory )
 
-<<<<<<< Updated upstream
 				for _,v in pairs(Data) do
 					local Var = string.Explode( "=", v )
 					local name = Var[1]
 					local variable = Var[2]
-=======
-		local loadBtn = vgui.Create( "DButton", container )
-		loadBtn:SetText( "Load" )
-		loadBtn:SetTall( 20 )
-		loadBtn:Dock( TOP )
-
-		loadBtn.DoClick = function( self )
-			if not selectedItem then return end
->>>>>>> Stashed changes
 
 					if name and variable then
 						if name == "SubMaterials" then
@@ -409,7 +243,6 @@ if CLIENT then
 			GetSaves( ScrollPanel )
 		end
 
-<<<<<<< Updated upstream
 		local Button = vgui.Create( "DButton", panel )
 		Button:SetText( "Refresh" )
 		Button:SetPos( 10, 390)
@@ -418,27 +251,6 @@ if CLIENT then
 			ScrollPanel:Clear()
 			selecteditem = nil
 			GetSaves( ScrollPanel )
-=======
-		local deleteBtn = vgui.Create( "DButton", container )
-		deleteBtn:SetText( "Delete" )
-		deleteBtn:Dock( TOP )
-		deleteBtn:SetTall( 20 )
-		deleteBtn.DoClick = function( self )
-			if not selectedItem then return end
-
-			Derma_Query( "Are you sure you want to delete " .. selectedItem .. "?", "Confirm deletion",
-				"Yes", function()
-					file.Delete( "saved_vehicles/" .. selectedItem )
-
-					refreshList( ScrollPanel )
-				end,
-			"No" )
-		end
-
-
-		refreshBtn.DoClick = function()
-			refreshList( ScrollPanel )
->>>>>>> Stashed changes
 		end
 	end
 end
