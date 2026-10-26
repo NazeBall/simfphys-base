@@ -102,17 +102,13 @@ function meta:IsDrivingSimfphys()
 	return Pod == Car:GetDriverSeat()
 end
 
-function meta:GetSimfphys()
-	if not ply_InVehicle( self ) then
+function meta:GetSimfphys()end
+	local veh = ply_GetVehicle( self )
+	if veh == NULL then
 		return NULL, false
 	end
 
-	local Pod = ply_GetVehicle( self )
-	if not Pod:IsValid() then
-		return NULL, false
-	end
-
-	local tab = Pod:GetTable()
+	local tab = veh:GetTable()
 
 	if tab.SPHYSchecked == true then
 
@@ -120,11 +116,19 @@ function meta:GetSimfphys()
 
 	elseif tab.SPHYSchecked == nil then
 
-		local Parent = Pod:GetParent()
+		local Parent = veh:GetParent()
 
-		if not IsValid( Parent ) then tab.SPHYSchecked = false return NULL, false end
+		if not IsValid( Parent ) then
+			tab.SPHYSchecked = false
+			
+			return NULL, false
+		end
 
-		if not simfphys.IsCar( Parent ) then tab.SPHYSchecked = false return NULL, false end
+		if not simfphys.IsCar( Parent ) then 
+			tab.SPHYSchecked = false
+
+			return NULL, false
+		end
 
 		tab.SPHYSchecked = true
 		tab.SPHYSBaseEnt = Parent
