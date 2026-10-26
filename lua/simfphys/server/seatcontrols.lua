@@ -17,8 +17,6 @@ net.Receive( "simfphys_mousesteer", function( _, ply )
 end )
 
 net.Receive( "simfphys_blockcontrols", function( _, ply )
-	if not IsValid( ply ) then return end
-
 	ply.blockcontrols = net.ReadBool()
 end )
 
