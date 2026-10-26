@@ -80,7 +80,7 @@ simfphys.wood = CreateConVar( "sv_simfphys_traction_wood", "1", {FCVAR_REPLICATE
 function simfphys.IsCar( ent )
 	if not IsValid( ent ) then return false end
 
-	return ent:GetClass():lower() == "gmod_sent_vehicle_fphysics_base"
+	return ent:GetClass() == "gmod_sent_vehicle_fphysics_base"
 end
 
 local meta = FindMetaTable( "Player" )
