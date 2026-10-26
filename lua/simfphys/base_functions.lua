@@ -102,7 +102,7 @@ function meta:IsDrivingSimfphys()
 	return Pod == Car:GetDriverSeat()
 end
 
-function meta:GetSimfphys()end
+function meta:GetSimfphys()
 	local veh = ply_GetVehicle( self )
 	if veh == NULL then
 		return NULL, false
