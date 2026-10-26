@@ -1,11 +1,11 @@
-CreateConVar( "sv_simfphys_devmode", "1", {FCVAR_NONE},"does nothing, this just here for backwards compatibility. Restrict the tools instead." )
-CreateConVar( "sv_simfphys_enabledamage", "1", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"1 = enabled, 0 = disabled" )
-CreateConVar( "sv_simfphys_gib_lifetime", "30", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"How many seconds before removing the gibs (0 = never remove)" )
-CreateConVar( "sv_simfphys_playerdamage", "1", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"should players take damage from collisions in vehicles?" )
-CreateConVar( "sv_simfphys_damagemultiplicator", "1", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"vehicle damage multiplicator" )
-CreateConVar( "sv_simfphys_fuel", "1", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"enable fuel? 1 = enabled, 0 = disabled" )
-CreateConVar( "sv_simfphys_fuelscale", "0.1", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"fuel tank size multiplier. 1 = Realistic fuel tank size (about 2-3 hours of fullthrottle driving, Lol, have fun)" )
-CreateConVar( "sv_simfphys_teampassenger", "0", {FCVAR_REPLICATED , FCVAR_ARCHIVE},"allow players of different teams to enter the same vehicle?, 0 = allow everyone, 1 = team only" )
+CreateConVar( "sv_simfphys_devmode", 1, {FCVAR_NONE},"does nothing, this just here for backwards compatibility. Restrict the tools instead." )
+CreateConVar( "sv_simfphys_enabledamage", 1, {FCVAR_REPLICATED , FCVAR_ARCHIVE},"1 = enabled, 0 = disabled" )
+CreateConVar( "sv_simfphys_gib_lifetime", 30, {FCVAR_REPLICATED , FCVAR_ARCHIVE},"How many seconds before removing the gibs (0 = never remove)" )
+CreateConVar( "sv_simfphys_playerdamage", 1, {FCVAR_REPLICATED , FCVAR_ARCHIVE},"should players take damage from collisions in vehicles?" )
+CreateConVar( "sv_simfphys_damagemultiplicator", 1, {FCVAR_REPLICATED , FCVAR_ARCHIVE},"vehicle damage multiplicator" )
+CreateConVar( "sv_simfphys_fuel", 1, {FCVAR_REPLICATED , FCVAR_ARCHIVE},"enable fuel? 1 = enabled, 0 = disabled" )
+CreateConVar( "sv_simfphys_fuelscale", 0.1, {FCVAR_REPLICATED , FCVAR_ARCHIVE},"fuel tank size multiplier. 1 = Realistic fuel tank size (about 2-3 hours of fullthrottle driving, Lol, have fun)" )
+CreateConVar( "sv_simfphys_teampassenger", 0, {FCVAR_REPLICATED , FCVAR_ARCHIVE},"allow players of different teams to enter the same vehicle?, 0 = allow everyone, 1 = team only" )
 
 
 local simfphys = simfphys
@@ -195,20 +195,20 @@ if SERVER then
 	end )
 
 	net.Receive( "simfphys_settings", function( length, ply )
-		if not IsValid( ply ) or not ply:IsSuperAdmin() then return end
+		if not ply:IsSuperAdmin() then return end
 
-		local dmgEnabled = tostring(net.ReadBool() and 1 or 0)
-		local giblifetime = tostring(net.ReadFloat())
+		local dmgEnabled = net.ReadBool() and 1 or 0
+		local giblifetime = net.ReadFloat()
 
-		local dmgMul = tostring(net.ReadFloat())
-		local pdmgEnabled = tostring(net.ReadBool() and 1 or 0)
+		local dmgMul = net.ReadFloat()
+		local pdmgEnabled = net.ReadBool() and 1 or 0
 
-		local fuel = tostring(net.ReadBool() and 1 or 0)
-		local fuelscale = tostring(net.ReadFloat())
+		local fuel = net.ReadBool() and 1 or 0
+		local fuelscale = net.ReadFloat()
 
 		local newtraction = net.ReadTable()
 
-		local teamonly = tostring(net.ReadBool() and 1 or 0)
+		local teamonly = net.ReadBool() and 1 or 0
 
 		RunConsoleCommand("sv_simfphys_enabledamage", dmgEnabled )
 		RunConsoleCommand("sv_simfphys_gib_lifetime", giblifetime )
@@ -220,7 +220,7 @@ if SERVER then
 		RunConsoleCommand("sv_simfphys_teampassenger", teamonly )
 
 		for k, v in pairs( newtraction ) do
-			RunConsoleCommand("sv_simfphys_traction_"..k, v)
+			RunConsoleCommand("sv_simfphys_traction_" .. k, v)
 		end
 		simfphys.UpdateFrictionData()
 	end)
