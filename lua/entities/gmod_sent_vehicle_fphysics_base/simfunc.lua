@@ -11,8 +11,7 @@ function ENT:WheelOnGround()
 	self.RearWheelPowered = self:GetPowerDistribution() ~= -1
 
 	local wheels = self.Wheels
-	for i = 1, #wheels do
-		local wheel = wheels[i]
+	for i, wheel in ipairs( wheels ) do
 
 		if not IsValid( wheel ) then continue end
 
@@ -364,8 +363,7 @@ function ENT:SimulateWheels( k_clutch, LimitRPM )
 	local steerMaster2 = selfTbl.SteerMaster2
 	local steerMaster2Valid = IsValid( steerMaster2 )
 
-	for i = 1, #selfTbl.Wheels do
-		local wheel = selfTbl.Wheels[i]
+	for i, wheel in ipairs( selfTbl.Wheels ) do
 		if not IsValid( wheel ) then continue end
 
 		local phys = wheel:GetPhysicsObject()
