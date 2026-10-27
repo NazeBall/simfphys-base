@@ -11,8 +11,7 @@ function ENT:WheelOnGround()
 	self.RearWheelPowered = self:GetPowerDistribution() ~= -1
 
 	local wheels = self.Wheels
-	for i = 1, #wheels do
-		local wheel = wheels[i]
+	for i, wheel in ipairs( wheels ) do
 
 		if not IsValid( wheel ) then continue end
 
@@ -104,10 +103,15 @@ function ENT:SimulateEngine( IdleRPM, LimitRPM, Powerbandstart, Powerbandend, cu
 		MaxTorque = MaxTorque * ( self:GetCurHealth() / ( self:GetMaxHealth() * 0.3 ) )
 	end
 
-	-- TODO: Split these lines up.
+	-- TODO: Make it look less like cow shit. 
 	local engineRPM = selfTbl.EngineRPM
 	if selfTbl.EngineIsOn then
-		engineRPM = mathClamp( engineRPM + mathClamp( DesRPM - engineRPM, -mathMax( engineRPM / 15, 1 ), mathMax( -selfTbl.RpmDiff / 1.5 * InvClutch + ( selfTbl.Torque * 5 ) / 0.15 * selfTbl.Clutch, 1 ) ) + selfTbl.RPM_DIFFERENCE * Throttle, 0, LimitRPM )
+		local amin,amax = -mathMax( engineRPM / 15, 1 ), mathMax( -selfTbl.RpmDiff / 1.5 * InvClutch + ( selfTbl.Torque * 5 ) / 0.15 * selfTbl.Clutch, 1 )
+		local a = mathClamp( DesRPM - engineRPM, amin, amax )
+
+		local current = engineRPM + a + selfTbl.RPM_DIFFERENCE * Throttle
+
+		engineRPM = mathClamp( current, 0, LimitRPM )
 	else
 		engineRPM = 0
 	end
@@ -170,7 +174,7 @@ function ENT:SimulateEngine( IdleRPM, LimitRPM, Powerbandstart, Powerbandend, cu
 	phys:ApplyForceOffset( -selfTbl.Forward * selfTbl.Mass * reactionForce, baseMassCenter + selfTbl.Up * dt_mul )
 	phys:ApplyForceOffset( selfTbl.Forward * selfTbl.Mass * reactionForce, baseMassCenter - selfTbl.Up * dt_mul )
 	
-end
+end	
 
 function ENT:SimulateTransmission( k_throttle, k_brake, k_fullthrottle, k_clutch, k_handbrake, k_gearup, k_geardown, isauto, IdleRPM, Powerbandstart, Powerbandend, shiftmode, cruisecontrol, curtime )
 	local GearsCount = #self.Gears
@@ -360,8 +364,8 @@ function ENT:SimulateWheels( k_clutch, LimitRPM )
 	local steerMaster2 = selfTbl.SteerMaster2
 	local steerMaster2Valid = IsValid( steerMaster2 )
 
-	for i = 1, #selfTbl.Wheels do
-		local wheel = selfTbl.Wheels[i]
+	for i, wheel in ipairs( selfTbl.Wheels ) do
+
 		if not IsValid( wheel ) then continue end
 
 		local phys = wheel:GetPhysicsObject()
@@ -435,7 +439,7 @@ function ENT:SimulateWheels( k_clutch, LimitRPM )
 		selfTbl.VehicleData[ "Exp_GLF_".. i ] = GripLossFaktor ^ 2
 		wheel:SetGripLoss( GripLossFaktor )
 
-		local WheelOPow = math.abs( selfTbl.CurrentGear == 1 and math.min( TorqueConv, 0 ) or math.max( TorqueConv, 0 ) ) > 0
+		local WheelOPow = math.abs( selfTbl.CurrentGear == 1 and mathMin( TorqueConv, 0 ) or mathMax( TorqueConv, 0 ) ) > 0
 		local FrontWheelCanTurn = (WheelOPow and 0 or selfTbl.Brake) < MaxTraction * 1.75
 		local RearWheelCanTurn = (selfTbl.HandBrake < MaxTraction) and (WheelOPow and 0 or selfTbl.Brake) < MaxTraction * 2
 
@@ -519,7 +523,7 @@ function ENT:SimulateBlower(LimitRPM)
 
 	local Throttle = self:GetThrottle()
 
-	self.SmoothBlower = self.SmoothBlower + math.Clamp(math.min(self.EngineRPM / LimitRPM,1) * 500 - self.SmoothBlower,-20,20)
+	self.SmoothBlower = self.SmoothBlower + math.Clamp(mathMin(self.EngineRPM / LimitRPM,1) * 500 - self.SmoothBlower,-20,20)
 
 	local Volume1 = math.Clamp( self.SmoothBlower / 400 * (1 - 0.4 * Throttle) ,0, 1)
 	local Volume2 = math.Clamp( self.SmoothBlower / 400 * (0.10 + 0.4 * Throttle) ,0, 1)
