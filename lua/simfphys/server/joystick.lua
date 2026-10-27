@@ -178,19 +178,23 @@ hook.Add("JoystickInitialize", "simfphys_joystick", function()
 							vehicle.base.PressedKeys[v.uid] = val and val / 255 or 0
 						else
 							if string.StartWith( v.uid, "joystick_gear_" ) then
-								if val then
-									if v.uid == "joystick_gear_r" then
+								if v.uid == "joystick_gear_r" then
+									if val then
 										vehicle.base:ForceGear( 1 )
+									end
 
-									elseif v.uid == "joystick_gear_n" then
+								elseif v.uid == "joystick_gear_n" then
+									if val then
 										vehicle.base:ForceGear( 2 )
+									end
 
-									else
-										for i = 1, 8 do
-											if v.uid == ("joystick_gear_"..i) then
+								else
+									for i = 1, 8 do
+										if v.uid == ("joystick_gear_"..i) then
+											if val then
 												vehicle.base:ForceGear( i + 2 )
-												break
 											end
+											break
 										end
 									end
 								end
