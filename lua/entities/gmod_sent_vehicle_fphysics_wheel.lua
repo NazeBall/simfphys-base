@@ -168,50 +168,50 @@ if SERVER then
 		if EnableDust ~= self.OldVar then
 			self.OldVar = EnableDust
 
-			if self.RainDetected then
-				if EnableDust then
-					if IsValid( self.WheelSplash ) then
+			if IsValid( self.WheelSplash ) then
+
+				if self.RainDetected then
+					if EnableDust then
 						self.WheelSplash:Fire( "Start" )
+					else
+						self.WheelSplash:Fire( "Stop" )
 					end
-				elseif IsValid( self.WheelSplash ) then
+				else
 					self.WheelSplash:Fire( "Stop" )
 				end
-			elseif IsValid( self.WheelSplash ) then
-				self.WheelSplash:Fire( "Stop" )
-			end
 
-			if EnableDust then
-				if Material == "grass" then
-					if IsValid( self.WheelDust ) then
-						self.WheelDust:Fire( "Start" )
-					end
-				elseif Material == "dirt" or Material == "sand" then
-					if IsValid( self.WheelDust ) then
-						self.WheelDust:Fire( "Start" )
-					end
-				end
-			elseif IsValid( self.WheelDust ) then
-				self.WheelDust:Fire( "Stop" )
 			end
-		end
+			
+			if IsValid( self.WheelDust ) then
 
-		if EnableDust then
-			if Material ~= self.OldMaterial then
-				if Material == "grass" then
-					if IsValid( self.WheelDust ) then
+				if EnableDust then
+					if Material == "grass" then
 						self.WheelDust:Fire( "Start" )
-					end
-				elseif Material == "dirt" or Material == "sand" then
-					if IsValid( self.WheelDust ) then
+					elseif Material == "dirt" or Material == "sand" then
 						self.WheelDust:Fire( "Start" )
 					end
 				else
-					if IsValid( self.WheelDust ) then
+					self.WheelDust:Fire( "Stop" )
+				end
+
+			end
+			
+		end
+
+		if IsValid( self.WheelDust ) then
+			if EnableDust then
+				if Material ~= self.OldMaterial then
+					if Material == "grass" then
+						self.WheelDust:Fire( "Start" )
+					elseif Material == "dirt" or Material == "sand" then
+						self.WheelDust:Fire( "Start" )
+					else
 						self.WheelDust:Fire( "Stop" )
 					end
+					self.OldMaterial = Material
 				end
-				self.OldMaterial = Material
 			end
+			
 		end
 
 		if self.RollSound_Broken then
@@ -247,20 +247,18 @@ if SERVER then
 		if EnableDust ~= selfTbl.OldVar then
 			selfTbl.OldVar = EnableDust
 
-			if selfTbl.RainDetected then
-				if EnableDust then
-					if IsValid( selfTbl.WheelSplash ) then
+			if IsValid( selfTbl.WheelSplash ) then
+				
+				if selfTbl.RainDetected then
+					if EnableDust then
 						selfTbl.WheelSplash:Fire( "Start" )
-					end
-				else
-					if IsValid( selfTbl.WheelSplash ) then
+					else
 						selfTbl.WheelSplash:Fire( "Stop" )
 					end
-				end
-			else
-				if IsValid( selfTbl.WheelSplash ) then
+				else
 					selfTbl.WheelSplash:Fire( "Stop" )
 				end
+				
 			end
 
 			if EnableDust then
