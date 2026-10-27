@@ -479,10 +479,6 @@ function ENT:Backfire( damaged )
 	end
 end
 
-function ENT:Draw()
-	self:DrawModel()
-end
-
 function ENT:SetSoundPreset(index)
 	local vehiclelist = list.Get( "simfphys_vehicles" )[self:GetSpawn_List()] or false
 
