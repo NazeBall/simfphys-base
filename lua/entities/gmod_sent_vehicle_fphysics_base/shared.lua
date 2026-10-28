@@ -70,6 +70,9 @@ function ENT:SetupDataTables()
 
 	self:NetworkVar( "Vector",1, "FuelPortPosition" )
 
+	self:NetworkVar( "Float", "TrackSpinL" )
+	self:NetworkVar( "Float", "TrackSpinR" )
+
 	if SERVER then
 		self:NetworkVarNotify( "FrontSuspensionHeight", self.OnFrontSuspensionHeightChanged )
 		self:NetworkVarNotify( "RearSuspensionHeight", self.OnRearSuspensionHeightChanged )
@@ -78,11 +81,6 @@ function ENT:SetupDataTables()
 		self:NetworkVarNotify( "Active", self.OnActiveChanged )
 		self:NetworkVarNotify( "Throttle", self.OnThrottleChanged )
 	end
-
-	self:AddDataTables()
-end
-
-function ENT:AddDataTables()
 end
 
 function ENT:IsSimfphyscar()
